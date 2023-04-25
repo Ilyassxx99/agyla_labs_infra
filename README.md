@@ -4,6 +4,8 @@ Welcome! This README will provide you with instructions on how to deploy Terrafo
 
 ## Catpipeline Project
 
+https://github.com/acantril/learn-cantrill-io-labs/tree/master/aws-codepipeline-catpipeline
+
 ### Create a new folder and clone a GitHub repo into it
 
 1. Open your terminal/command prompt.
@@ -107,3 +109,8 @@ git push
 ```
 
 Finally, you will need to configure CodeStar connection to your Github account : https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-github.html
+
+
+## Cuddles Reminder Project
+
+https://github.com/acantril/learn-cantrill-io-labs/tree/master/aws-serverless-pet-cuddle-o-tron
