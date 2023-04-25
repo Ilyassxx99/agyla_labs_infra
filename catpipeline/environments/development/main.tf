@@ -29,6 +29,7 @@ module "pipeline" {
   catpipeline_tg_A_name = module.compute.catpipeline_tg_A_name
   catpipeline_tg_B_name = module.compute.catpipeline_tg_B_name
   catpipeline_lb_listener_arn = module.compute.catpipeline_lb_listener_arn
+  app_source_github_repo = var.app_source_github_repo
   depends_on = [
     module.network,
     module.security,

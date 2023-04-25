@@ -1,0 +1,2 @@
+catpipeline/environments/development/.terraform/
+catpipeline/environments/development/.terraform.lock.hcl

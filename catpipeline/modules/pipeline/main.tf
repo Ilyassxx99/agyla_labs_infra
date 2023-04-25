@@ -1,12 +1,12 @@
 resource "aws_codecommit_repository" "ilyass_cicd_lab" {
   repository_name = "catpipelineIlyass"
-  description = "Repository for CICD lab"
+  description     = "Repository for CICD lab"
 }
 
 resource "aws_ecr_repository" "ilyass-cicd-lab" {
-  name = "catpipeline"
+  name                 = "catpipeline"
   image_tag_mutability = "MUTABLE"
-  force_delete = true
+  force_delete         = true
   image_scanning_configuration {
     scan_on_push = true
   }
@@ -21,11 +21,11 @@ data "aws_caller_identity" "current" {}
 
 data "aws_elb_service_account" "main" {}
 
-resource "aws_codebuild_source_credential" "catpipeline_github_token" {
+/* resource "aws_codebuild_source_credential" "catpipeline_github_token" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
   server_type = "GITHUB"
   token       = data.aws_ssm_parameter.catpipeline_github_token.value
-}
+} */
 
 resource "aws_codebuild_project" "catpipeline" {
   name          = "ilyass-catpipeline"
@@ -42,7 +42,7 @@ resource "aws_codebuild_project" "catpipeline" {
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
-    privileged_mode = true
+    privileged_mode             = true
     environment_variable {
       name  = "AWS_DEFAULT_REGION"
       value = "us-east-1"
@@ -72,7 +72,7 @@ resource "aws_codebuild_project" "catpipeline" {
     type = "CODEPIPELINE"
   }
 
-  
+
   /* source {
     type            = "GITHUB"
     location        = "https://github.com/Ilyassxx99/aws-devops-cicd.git"
@@ -84,28 +84,39 @@ resource "aws_codebuild_project" "catpipeline" {
   } */
 }
 
-resource "aws_s3_bucket" "codepipeline" {
-  bucket = "ilyass-catpipeline-bucket"
+resource "aws_s3_bucket" "catpipeline" {
+  bucket        = "ilyass-catpipeline-bucket"
   force_destroy = true
 }
 
-resource "aws_s3_bucket_acl" "codepipeline" {
-  bucket = aws_s3_bucket.codepipeline.id
+resource "aws_s3_bucket_ownership_controls" "catpipeline" {
+  bucket = aws_s3_bucket.catpipeline.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "catpipeline" {
+  bucket = aws_s3_bucket.catpipeline.id
   acl    = "private"
+  depends_on = [
+    aws_s3_bucket_ownership_controls.catpipeline
+  ]
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "codepipeline" {
-  bucket = aws_s3_bucket.codepipeline.id
+  bucket = aws_s3_bucket.catpipeline.id
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
 
 resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
-  bucket = aws_s3_bucket.codepipeline.id
+  bucket = aws_s3_bucket.catpipeline.id
   policy = data.aws_iam_policy_document.allow_access_from_another_account.json
 }
 
@@ -121,8 +132,8 @@ data "aws_iam_policy_document" "allow_access_from_another_account" {
     ]
 
     resources = [
-      aws_s3_bucket.codepipeline.arn,
-      "${aws_s3_bucket.codepipeline.arn}/*",
+      aws_s3_bucket.catpipeline.arn,
+      "${aws_s3_bucket.catpipeline.arn}/*",
     ]
   }
   statement {
@@ -135,14 +146,14 @@ data "aws_iam_policy_document" "allow_access_from_another_account" {
         "ecs.amazonaws.com",
         "ecs-tasks.amazonaws.com",
         "codedeploy.amazonaws.com"
-        ]
+      ]
     }
     actions = [
       "s3:*",
     ]
     resources = [
-      aws_s3_bucket.codepipeline.arn,
-      "${aws_s3_bucket.codepipeline.arn}/*",
+      aws_s3_bucket.catpipeline.arn,
+      "${aws_s3_bucket.catpipeline.arn}/*",
     ]
   }
 }
@@ -158,9 +169,9 @@ resource "aws_codedeploy_app" "catpipeline" {
 }
 
 resource "aws_codedeploy_deployment_group" "catpipeline" {
-  app_name = aws_codedeploy_app.catpipeline.name
-  deployment_group_name = "ilyass-catpipeline-group"
-  service_role_arn = var.catpipeline_deploy_role
+  app_name               = aws_codedeploy_app.catpipeline.name
+  deployment_group_name  = "ilyass-catpipeline-group"
+  service_role_arn       = var.catpipeline_deploy_role
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
 
   auto_rollback_configuration {
@@ -211,7 +222,7 @@ resource "aws_codepipeline" "codepipeline" {
   role_arn = var.catpipeline_role
 
   artifact_store {
-    location = aws_s3_bucket.codepipeline.id
+    location = aws_s3_bucket.catpipeline.id
     type     = "S3"
   }
 
@@ -228,7 +239,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         ConnectionArn    = aws_codestarconnections_connection.catpipeline.arn
-        FullRepositoryId = "Ilyassxx99/aws-devops-cicd"
+        FullRepositoryId = var.app_source_github_repo
         BranchName       = "main"
       }
     }
@@ -252,7 +263,7 @@ resource "aws_codepipeline" "codepipeline" {
     }
   }
 
-/*   stage {
+  /*   stage {
     name = "Deploy"
 
     action {
@@ -275,20 +286,20 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Deploy"
 
     action {
-      name             = "Deploy"
-      category         = "Deploy"
-      owner            = "AWS"
-      provider         = "CodeDeployToECS"
-      input_artifacts  = ["source_output"]
-      version          = "1"
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeployToECS"
+      input_artifacts = ["source_output"]
+      version         = "1"
 
       configuration = {
-        AppSpecTemplateArtifact = "source_output"
-        AppSpecTemplatePath = "appspec.yml"
+        AppSpecTemplateArtifact        = "source_output"
+        AppSpecTemplatePath            = "appspec.yml"
         TaskDefinitionTemplateArtifact = "source_output"
-        TaskDefinitionTemplatePath = "task_definition.json"
-        ApplicationName         = aws_codedeploy_app.catpipeline.name
-        DeploymentGroupName     = aws_codedeploy_deployment_group.catpipeline.deployment_group_name
+        TaskDefinitionTemplatePath     = "task_definition.json"
+        ApplicationName                = aws_codedeploy_app.catpipeline.name
+        DeploymentGroupName            = aws_codedeploy_deployment_group.catpipeline.deployment_group_name
       }
     }
   }

@@ -29,8 +29,7 @@ variable "app_source_path" {
   default = "/Users/agyla/Labs/DevOps-CICD/repos/catpipeline"
 }
 
-
 variable "app_source_github_repo" {
   description = "GitHub Repository of Source App Code"
-  default = "https://github.com/Ilyassxx99/catpipeline-test.git"
+  default = "Ilyassxx99/catpipeline"
 }

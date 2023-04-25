@@ -30,3 +30,8 @@ variable "catpipeline_tg_B_name" {
 variable "catpipeline_lb_listener_arn" {
   description = "ELB Listener Arn"
 }
+
+
+variable "app_source_github_repo" {
+  description = "GitHub Repository of Source App Code"
+}

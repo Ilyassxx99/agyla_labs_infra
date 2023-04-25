@@ -14,6 +14,6 @@ output "ecr_repo_url" {
 }
 
 output "catpipeline_bucket_id" {
-  value = aws_s3_bucket.codepipeline.id
+  value = aws_s3_bucket.catpipeline.id
   description = "ECR Repo URL"
 }

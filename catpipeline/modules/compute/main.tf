@@ -68,7 +68,7 @@ resource "aws_lb_listener" "catpipeline" {
 } */
 
 resource "aws_ecs_cluster" "catpipeline" {
-  name = "allthecatapps"
+  name = "ilyass-catpipeline-ecs"
 
   configuration {
     execute_command_configuration {
