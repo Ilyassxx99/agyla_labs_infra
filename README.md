@@ -3,6 +3,7 @@
 Welcome! This README will provide you with instructions on how to create a new folder, clone another GitHub repository into it, create a new private GitHub repository, push the folder into the new private repository, and run Terraform infrastructure.
 
 ## Catpipeline Project
+
 ### Create a new folder and clone a GitHub repo into it
 
 1. Open your terminal/command prompt.
