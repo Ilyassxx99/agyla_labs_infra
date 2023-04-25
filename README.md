@@ -42,22 +42,21 @@ git clone https://github.com/Ilyassxx99/catpipeline.git
 cd agyla-labs/catpipeline
 ```
 
-2. Add all files and folders in the directory to the Git repository using the `git add` command:
+2. Add the new private GitHub repository as a remote using the `git remote add` command:
+```
+git remote set-url origin https://github.com/your-username/new-private-repo.git
+```
+Replace `your-username` with your GitHub username and `new-private-repo` with the private repository name.
+
+3. Add all files and folders in the directory to the Git repository using the `git add` command:
 ```
 git add .
 ```
 
-3. Commit your changes using the `git commit` command:
+4. Commit your changes using the `git commit` command:
 ```
 git commit -m "Initial commit"
 ```
-
-4. Add the new private GitHub repository as a remote using the `git remote add` command:
-```
-git remote set-url origin https://github.com/your-username/new-private-repo.git
-```
-
-Replace `your-username` with your GitHub username and `new-private-repo` with the private repository name.
 
 5. Push the changes to the new private repository using the `git push` command:
 ```
