@@ -2,8 +2,8 @@
 
 Welcome! This README will provide you with instructions on how to create a new folder, clone another GitHub repository into it, create a new private GitHub repository, push the folder into the new private repository, and run Terraform infrastructure.
 
-### Catpipeline Project
-## Create a new folder and clone a GitHub repo into it
+## Catpipeline Project
+### Create a new folder and clone a GitHub repo into it
 
 1. Open your terminal/command prompt.
 
@@ -27,7 +27,7 @@ cd <new-folder-name>
 git clone https://github.com/Ilyassxx99/catpipeline.git
 ```
 
-## Create a new private GitHub repository
+### Create a new private GitHub repository
 
 1. Log in to your GitHub account.
 
@@ -39,9 +39,12 @@ git clone https://github.com/Ilyassxx99/catpipeline.git
 
 5. Click "Create repository".
 
-## Push the previous folder into the new private repository
+### Push the previous folder into the new private repository
 
 1. In your terminal/command prompt, navigate to the folder you created earlier.
+```
+cd <path/to/your/directory>/catpipeline
+```
 
 2. Add all files and folders in the directory to the Git repository using the `git add` command:
 ```
@@ -65,14 +68,14 @@ Replace `your-username` with your GitHub username and `new-private-repo` with th
 git push -u origin main
 ```
 
-## Run Terraform infrastructure
+### Run Terraform infrastructure
 
 1. Install Terraform on your machine by following the official installation guide: [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
 2. In your terminal/command prompt, navigate to the directory containing the Catpipeline Terraform configuration files (`.tf` files).
 ```
 git clone https://github.com/Ilyassxx99/agyla_labs_infra.git
-cd catpipeline/environments/development
+cd agyla_labs_infra/catpipeline/environments/development
 ```
 
 3. Initialize the Terraform working directory by running the following command:
