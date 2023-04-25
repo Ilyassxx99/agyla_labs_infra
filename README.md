@@ -8,19 +8,14 @@ Welcome! This README will provide you with instructions on how to create a new f
 
 1. Open your terminal/command prompt.
 
-2. Navigate to the directory where you want to create the new folder using the `cd` command:
-```
-cd <path/to/your/directory>
-```
-
 3. Create a new folder using the `mkdir` command:
 ```
-mkdir <new-folder-name>
+mkdir agyla-labs
 ```
 
 4. Navigate to the new folder:
 ```
-cd <new-folder-name>
+cd agyla-labs
 ```
 
 5. Clone the GitHub repository containing the app source code into the new folder using the `git clone` command:
@@ -44,7 +39,7 @@ git clone https://github.com/Ilyassxx99/catpipeline.git
 
 1. In your terminal/command prompt, navigate to the folder you created earlier.
 ```
-cd <path/to/your/directory>/catpipeline
+cd agyla-labs/catpipeline
 ```
 
 2. Add all files and folders in the directory to the Git repository using the `git add` command:
