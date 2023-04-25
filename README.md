@@ -90,12 +90,18 @@ terraform plan
 
 6. Apply the Terraform configuration by running the following command:
 ```
-terraform apply
+terraform apply --auto-approve
 ```
-
-You will be prompted to confirm that you want to proceed. Type `yes` and press Enter to continue.
 
 7. After the infrastructure has been successfully created, you can inspect the state by running the following command:
 ```
 terraform show
+```
+
+Your terraform script generates source code files, so you will need to go back to the source code folder and push the new changes to GitHub :
+```
+cd agyla-labs/catpipeline
+git add .
+git commit -m "Adding Terraform generated scripts"
+git push
 ```
