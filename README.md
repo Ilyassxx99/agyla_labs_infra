@@ -2,31 +2,30 @@
 
 Welcome! This README will provide you with instructions on how to create a new folder, clone another GitHub repository into it, create a new private GitHub repository, push the folder into the new private repository, and run Terraform infrastructure.
 
+### Catpipeline Project
 ## Create a new folder and clone a GitHub repo into it
 
 1. Open your terminal/command prompt.
 
 2. Navigate to the directory where you want to create the new folder using the `cd` command:
 ```
-cd path/to/your/directory
+cd <path/to/your/directory>
 ```
 
 3. Create a new folder using the `mkdir` command:
 ```
-mkdir new-folder-name
+mkdir <new-folder-name>
 ```
 
 4. Navigate to the new folder:
 ```
-cd new-folder-name
+cd <new-folder-name>
 ```
 
-5. Clone the desired GitHub repository into the new folder using the `git clone` command:
+5. Clone the GitHub repository containing the app source code into the new folder using the `git clone` command:
 ```
-git clone https://github.com/user/repo.git
+git clone https://github.com/Ilyassxx99/catpipeline.git
 ```
-
-Replace `user` with the GitHub username and `repo` with the repository name.
 
 ## Create a new private GitHub repository
 
@@ -36,7 +35,7 @@ Replace `user` with the GitHub username and `repo` with the repository name.
 
 3. Enter a repository name, and select the "Private" visibility option.
 
-4. You may choose to initialize the repository with a README, .gitignore, or license file, but it's not required.
+4. Uncheck the add a README.me option.
 
 5. Click "Create repository".
 
@@ -44,38 +43,37 @@ Replace `user` with the GitHub username and `repo` with the repository name.
 
 1. In your terminal/command prompt, navigate to the folder you created earlier.
 
-2. Initialize a new Git repository within the folder using the `git init` command:
-```
-git init
-```
-
-3. Add all files and folders in the directory to the Git repository using the `git add` command:
+2. Add all files and folders in the directory to the Git repository using the `git add` command:
 ```
 git add .
 ```
 
-4. Commit your changes using the `git commit` command:
+3. Commit your changes using the `git commit` command:
 ```
 git commit -m "Initial commit"
 ```
 
-5. Add the new private GitHub repository as a remote using the `git remote add` command:
+4. Add the new private GitHub repository as a remote using the `git remote add` command:
 ```
-git remote add origin https://github.com/your-username/new-private-repo.git
+git remote set-url origin https://github.com/your-username/new-private-repo.git
 ```
 
 Replace `your-username` with your GitHub username and `new-private-repo` with the private repository name.
 
-6. Push the changes to the new private repository using the `git push` command:
+5. Push the changes to the new private repository using the `git push` command:
 ```
-git push -u origin master
+git push -u origin main
 ```
 
 ## Run Terraform infrastructure
 
 1. Install Terraform on your machine by following the official installation guide: [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-2. In your terminal/command prompt, navigate to the directory containing your Terraform configuration files (`.tf` files).
+2. In your terminal/command prompt, navigate to the directory containing the Catpipeline Terraform configuration files (`.tf` files).
+```
+git clone https://github.com/Ilyassxx99/agyla_labs_infra.git
+cd catpipeline/environments/development
+```
 
 3. Initialize the Terraform working directory by running the following command:
 ```
@@ -103,5 +101,3 @@ You will be prompted to confirm that you want to proceed. Type `yes` and press E
 ```
 terraform show
 ```
-
-For more information about Terraform commands and usage, refer to the [official Terraform documentation](https://www.terraform.io/docs/index.html).
