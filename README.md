@@ -1,6 +1,6 @@
 # Project Setup & Cloning Guide
 
-Welcome! This README will provide you with instructions on how to create a new folder, clone another GitHub repository into it, create a new private GitHub repository, push the folder into the new private repository, and run Terraform infrastructure.
+Welcome! This README will provide you with instructions on how to deploy Terraform infrastructure for Adrian Cantrill labs (https://github.com/acantril/learn-cantrill-io-labs)
 
 ## Catpipeline Project
 
