@@ -105,3 +105,5 @@ git add .
 git commit -m "Adding Terraform generated scripts"
 git push
 ```
+
+Finally, you will need to configure CodeStar connection to your Github account : https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-github.html
