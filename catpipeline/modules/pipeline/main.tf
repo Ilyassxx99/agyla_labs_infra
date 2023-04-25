@@ -1,25 +1,8 @@
-resource "aws_codecommit_repository" "ilyass_cicd_lab" {
-  repository_name = "catpipelineIlyass"
-  description     = "Repository for CICD lab"
-}
-
-resource "aws_ecr_repository" "ilyass-cicd-lab" {
-  name                 = "catpipeline"
-  image_tag_mutability = "MUTABLE"
-  force_delete         = true
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-
-
 data "aws_ssm_parameter" "catpipeline_github_token" {
   name = var.github_access_token_ssm
 }
 
 data "aws_caller_identity" "current" {}
-
-data "aws_elb_service_account" "main" {}
 
 /* resource "aws_codebuild_source_credential" "catpipeline_github_token" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
@@ -57,7 +40,7 @@ resource "aws_codebuild_project" "catpipeline" {
     }
     environment_variable {
       name  = "IMAGE_REPO_NAME"
-      value = aws_ecr_repository.ilyass-cicd-lab.name
+      value = var.catpipeline_ecr_name
     }
   }
 
@@ -82,80 +65,6 @@ resource "aws_codebuild_project" "catpipeline" {
       fetch_submodules = true
     }
   } */
-}
-
-resource "aws_s3_bucket" "catpipeline" {
-  bucket        = "ilyass-catpipeline-bucket"
-  force_destroy = true
-}
-
-resource "aws_s3_bucket_ownership_controls" "catpipeline" {
-  bucket = aws_s3_bucket.catpipeline.id
-
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
-
-resource "aws_s3_bucket_acl" "catpipeline" {
-  bucket = aws_s3_bucket.catpipeline.id
-  acl    = "private"
-  depends_on = [
-    aws_s3_bucket_ownership_controls.catpipeline
-  ]
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "codepipeline" {
-  bucket = aws_s3_bucket.catpipeline.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}
-
-resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
-  bucket = aws_s3_bucket.catpipeline.id
-  policy = data.aws_iam_policy_document.allow_access_from_another_account.json
-}
-
-data "aws_iam_policy_document" "allow_access_from_another_account" {
-  statement {
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_elb_service_account.main.arn]
-    }
-
-    actions = [
-      "s3:*",
-    ]
-
-    resources = [
-      aws_s3_bucket.catpipeline.arn,
-      "${aws_s3_bucket.catpipeline.arn}/*",
-    ]
-  }
-  statement {
-    principals {
-      type = "Service"
-      identifiers = [
-        "codebuild.amazonaws.com",
-        "ec2.amazonaws.com",
-        "codepipeline.amazonaws.com",
-        "ecs.amazonaws.com",
-        "ecs-tasks.amazonaws.com",
-        "codedeploy.amazonaws.com"
-      ]
-    }
-    actions = [
-      "s3:*",
-    ]
-    resources = [
-      aws_s3_bucket.catpipeline.arn,
-      "${aws_s3_bucket.catpipeline.arn}/*",
-    ]
-  }
 }
 
 resource "aws_codestarconnections_connection" "catpipeline" {
@@ -220,9 +129,13 @@ resource "aws_codedeploy_deployment_group" "catpipeline" {
 resource "aws_codepipeline" "codepipeline" {
   name     = "catpipeline-ilyass"
   role_arn = var.catpipeline_role
+  depends_on = [
+    aws_codestarconnections_connection.catpipeline,
+    aws_codedeploy_deployment_group,
+  ]
 
   artifact_store {
-    location = aws_s3_bucket.catpipeline.id
+    location = var.catpipeline_bucket_id
     type     = "S3"
   }
 

@@ -1,2 +1,4 @@
 catpipeline/environments/development/.terraform/
 catpipeline/environments/development/.terraform.lock.hcl
+cuddle-serverless/environments/development/.terraform/
+cuddle-serverless/environments/development/.terraform.lock.hcl

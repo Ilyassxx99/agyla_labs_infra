@@ -18,23 +18,6 @@ provider "aws" {
   }
   }
 
-module "pipeline" {
-  source = "../../modules/pipeline"
-  # Pass environment-specific variables
-  github_access_token_ssm = module.security.catpipeline_github_token_ssm_name
-  catpipeline_role = module.security.catpipeline_role_arn
-  catpipeline_deploy_role = module.security.catpipeline_deploy_role_arn
-  catpipeline_ecs_cluster = module.compute.catpipeline_ecs_cluster
-  catpipeline_ecs_service = module.compute.catpipeline_ecs_service
-  catpipeline_tg_A_name = module.compute.catpipeline_tg_A_name
-  catpipeline_tg_B_name = module.compute.catpipeline_tg_B_name
-  catpipeline_lb_listener_arn = module.compute.catpipeline_lb_listener_arn
-  app_source_github_repo = var.app_source_github_repo
-  depends_on = [
-    module.network,
-    module.security,
-  ]
-}
 
 module "security" {
   source = "../../modules/security"
@@ -45,14 +28,18 @@ module "network" {
   source = "../../modules/network"
 }
 
+module "storage" {
+  source = "../../modules/storage"
+}
+
 module "compute" {
   source = "../../modules/compute"
-  ecr_repo_url = module.pipeline.ecr_repo_url
+  ecr_repo_url = module.storage.ecr_repo_url
   ecs_task_role_arn = module.security.catpipeline_role_arn
   ecs_sg_id = module.network.catpipeline_sg_id
   ecs_subnet_primary_id = module.network.catpipeline_subnet_primary_id
   ecs_subnet_secondary_id = module.network.catpipeline_subnet_secondary_id
-  lb_logs_bucket_id = module.pipeline.catpipeline_bucket_id
+  lb_logs_bucket_id = module.storage.catpipeline_bucket_id
   vpc_id = module.network.catpipeline_vpc_id
   container_name = var.container_name
   task_def_name = var.task_def_name
@@ -60,6 +47,30 @@ module "compute" {
   depends_on = [
     module.network,
     module.security,
+    module.storage,
+  ]
+}
+
+
+module "pipeline" {
+  source = "../../modules/pipeline"
+  # Pass environment-specific variables
+  github_access_token_ssm = module.security.catpipeline_github_token_ssm_name
+  catpipeline_role = module.security.catpipeline_role_arn
+  catpipeline_deploy_role = module.security.catpipeline_deploy_role_arn
+  catpipeline_bucket_id = module.storage.catpipeline_bucket_id
+  catpipeline_ecs_cluster = module.compute.catpipeline_ecs_cluster
+  catpipeline_ecs_service = module.compute.catpipeline_ecs_service
+  catpipeline_tg_A_name = module.compute.catpipeline_tg_A_name
+  catpipeline_tg_B_name = module.compute.catpipeline_tg_B_name
+  catpipeline_lb_listener_arn = module.compute.catpipeline_lb_listener_arn
+  app_source_github_repo = var.app_source_github_repo
+  catpipeline_ecr_name = module.storage.catpipeline_ecr_name
+  depends_on = [
+    module.network,
+    module.security,
+    module.storage,
+    module.compute,
   ]
 }
 
@@ -68,7 +79,7 @@ data "aws_caller_identity" "current" {}
 locals {
   task_definition_template_content = templatefile("task_definition_template.json", {
     container_name = "${var.container_name}"
-    image_url = "${module.pipeline.ecr_repo_url}:latest"
+    image_url = "${module.storage.ecr_repo_url}:latest"
     account_id                = "${data.aws_caller_identity.current.account_id}"
     your_ecs_task_execution_role = "${module.security.catpipeline_role_arn}"
   })
