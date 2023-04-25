@@ -1,0 +1,21 @@
+{
+    "family": "example-family",
+    "containerDefinitions": [
+      {
+        "name": "${container_name}",
+        "image": "${image_url}",
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": 80
+          }
+        ]
+      }
+    ],
+    "requiresCompatibilities": ["FARGATE"],
+    "networkMode": "awsvpc",
+    "executionRoleArn": "arn:aws:iam::${account_id}:role/${your_ecs_task_execution_role}",
+    "memory": "512",
+    "cpu": "256"
+  }
+  

@@ -1,0 +1,2 @@
+variable "sender_email" {
+}
